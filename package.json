@@ -12,6 +12,9 @@
   },
   "description": "",
   "workspaces": [
-	  "packages/*"
-  ]
+    "packages/*"
+  ],
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
 }
