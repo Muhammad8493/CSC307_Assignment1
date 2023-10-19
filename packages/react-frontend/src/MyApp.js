@@ -10,7 +10,6 @@ function MyApp() {
   function updateList(person) {
     setCharacters([...characters, person]);
   }
-  
 
   function removeOneCharacter (index) {
     const updated = characters.filter((character, i) => {
@@ -19,9 +18,63 @@ function MyApp() {
     setCharacters(updated);
   }
 
+
+  function deleteUser(id) {
+    const promise = fetch(`http://localhost:8000/users/${id}`, {
+      method: 'DELETE',
+    });
+    return promise;
+  }
+  
+  function removeOneCharacter(index) { 
+    const id = characters[index].id;
+    deleteUser(id)
+      .then((response) => {
+        if(response.status == 204){
+          const updated = characters.filter((character, i) => {
+            return i !== index
+          });
+          setCharacters(updated);
+        }
+        else{
+          console.log('resource not found');
+        }
+      })
+    .catch((error) => {
+      console.log(error);
+    })
+  }
+
+
   function fetchUsers() {
     const promise = fetch("http://localhost:8000/users");
     return promise;
+  }
+
+function postUser(person) {
+  const promise = fetch("Http://localhost:8000/users", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(person),
+  });
+
+  return promise;
+}
+
+function updateList(person) { 
+  postUser(person)
+    .then((response) => {
+      if(response.status == 201){
+        response.json().then((newUser) => {
+        setCharacters([...characters, newUser]);
+        });
+      }
+      })
+    .catch((error) => {
+      console.log(error);
+    })
 }
 
 useEffect(() => {

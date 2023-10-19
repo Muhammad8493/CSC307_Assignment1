@@ -95,22 +95,28 @@ const addUser = (user) => {
     return user;
 }
 
+function generateId() {
+    const ID = Math.random(); 
+    return (ID * 1000000).toFixed(0);
+}
+
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
+    userToAdd.id = generateId();
     addUser(userToAdd);
-    res.send();
+    res.status(201).json(userToAdd);
 });
 
 
 
 app.delete('/users/:id', (req, res) => {
-    const id = req.params['id']; //or req.params.id
+    const id = req.params['id'];
     let result = findUserById(id);
     if (result === undefined) {
-        res.status(404).send('Resource not found.');
+        res.status(404).send();
     } else {
         const index = users['users_list'].indexOf(result);
         users['users_list'].splice(index, 1);
-        res.send('User deleted successfully')
+        res.status(204).send();
     }
 });
